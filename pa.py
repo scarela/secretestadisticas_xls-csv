@@ -34,7 +34,7 @@ def write_csv_download(rows, total_cols, label):
         max_len = max(len(row) for row in rows)
     else:
         max_len = total_cols
-    output.write(','.join([''] * max_len) + '\n')
+    output.write(','.join([''] * (max_len - 1)) + '\n')
     for i, row in enumerate(rows):
         trimmed_row = row[:max_len]
         # If the last element is empty, remove it (remove only one trailing comma)
