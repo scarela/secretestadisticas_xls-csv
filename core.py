@@ -1,7 +1,4 @@
-import streamlit as st
 import pandas as pd
-import tempfile
-import os
 
 def find_row_index(df, value):
     # Find the first row index where any cell matches the value (case-insensitive, strip spaces)
@@ -25,32 +22,6 @@ def get_player_data(sheet_name, xlsFile):
         data = row.iloc[1:players.columns.get_loc(last_valid)+1].tolist()
         data_rows.append(data)
     return data_rows
-
-def write_csv_download(rows, total_cols, label):
-    import io
-    output = io.StringIO()
-    # Write empty heading row (no extra comma)
-    if rows:
-        max_len = max(len(row) for row in rows)
-    else:
-        max_len = total_cols
-    output.write(','.join([''] * (max_len - 1)) + '\n')
-    for i, row in enumerate(rows):
-        trimmed_row = row[:max_len]
-        # If the last element is empty, remove it (remove only one trailing comma)
-        if trimmed_row and trimmed_row[-1] == '':
-            trimmed_row = trimmed_row[:-1]
-        line = ','.join(map(str, trimmed_row))
-        if i < len(rows) - 1:
-            output.write(line + '\n')
-        else:
-            output.write(line)
-    st.download_button(
-        label=label,
-        data=output.getvalue(),
-        file_name=label.replace(' ', '_').lower() + '.csv',
-        mime='text/csv'
-    )
 
 def process_xls(xlsFile):
     # Get batting and pitching data for visitor
@@ -91,21 +62,3 @@ def process_xls(xlsFile):
             home_rows.append(padded)
 
     return visitor_rows, visitor_total_cols, home_rows, home_total_cols
-
-st.title('Baseball Game Statistics CSV Generator')
-st.write('Upload a .xls file with the required sheets to generate visitor and home CSVs.')
-
-uploaded_file = st.file_uploader('Upload .xls file', type=['xls'])
-
-if uploaded_file:
-    with tempfile.NamedTemporaryFile(delete=False, suffix='.xls') as tmp:
-        tmp.write(uploaded_file.read())
-        tmp_path = tmp.name
-    try:
-        visitor_rows, visitor_total_cols, home_rows, home_total_cols = process_xls(tmp_path)
-        write_csv_download(visitor_rows, visitor_total_cols, 'Download Visitor CSV')
-        write_csv_download(home_rows, home_total_cols, 'Download Home CSV')
-    except Exception as e:
-        st.error(f'Error processing file: {e}')
-    finally:
-        os.remove(tmp_path)

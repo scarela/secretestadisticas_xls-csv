@@ -1,16 +1,22 @@
 # Baseball Game Statistics CSV Generator
 
-This Streamlit app allows you to upload a baseball game statistics `.xls` file and generates two CSV files:
+This project provides both a Streamlit web app and a CLI tool to process baseball game statistics from a `.xls` file and generate two CSV files:
 - **Visitor CSV**: Combines 'VisitorBatting' and 'VisitorPitching' sheets
 - **Home CSV**: Combines 'HomeBatting' and 'HomePitching' sheets
 
 ## Features
-- Upload a `.xls` file with the required sheets
-- Download the processed CSVs for visitor and home teams
+- Upload or process a `.xls` file with the required sheets
+- Download or generate the processed CSVs for visitor and home teams
 - Handles padding and formatting as required for downstream processing
+- Automated tests and GitHub Actions integration
 
 ## How to Use
-1. Deploy this app on [Streamlit Cloud](https://streamlit.io/cloud) or run locally with `streamlit run pa.py`.
+
+### Streamlit Web App
+1. Deploy this app on [Streamlit Cloud](https://streamlit.io/cloud) or run locally with:
+    ```sh
+    streamlit run streamlit_app.py
+    ```
 2. Upload your `.xls` file containing the sheets:
     - VisitorBatting
     - VisitorPitching
@@ -18,24 +24,29 @@ This Streamlit app allows you to upload a baseball game statistics `.xls` file a
     - HomePitching
 3. Download the generated CSV files using the provided buttons.
 
-## Local Development
+### CLI Tool
 1. Install dependencies:
     ```sh
     pip install -r requirements.txt
     ```
-2. Run the app:
+2. Run the script from the terminal:
     ```sh
-    streamlit run pa.py
+    python cli_app.py <path/to/your/file.xls>
     ```
+   The files `visitor.csv` and `home.csv` will be generated in the current directory.
 
-## File Structure
-- `pa.py`: Main Streamlit app
+## Project Structure
+- `core.py`: Core logic for data processing
+- `cli_app.py`: Command-line interface entry point
+- `streamlit_app.py`: Streamlit web app entry point
+- `utils.py`: Utility functions for output
 - `requirements.txt`: Python dependencies
 - `tests/`: Contains test files and sample `.xls` for validation
 
-## Testing
-Unit tests are provided in `tests/test.py` to compare generated CSVs with expected outputs.
+## Testing and CI
+- Unit tests are provided in `tests/test.py` and compare the generated CSVs with the expected files.
+- A GitHub Actions workflow automatically runs the tests on every push or pull request.
 
 ---
 
-**Author:** Your Name
+**Author:** Shamil Carela
